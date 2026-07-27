@@ -1,0 +1,188 @@
+{
+  "_meta": {
+    "versao": "1.0.0",
+    "data": "2026-07-27",
+    "fonte": [
+      "assets/law/cc-300-333.md (Código Civil, arts. 300.º-333.º, captura verbatim 2026-07-27)",
+      "assets/law/lei-23-96.md (Lei n.º 23/96, arts. 1.º e 10.º, captura verbatim 2026-07-27)"
+    ],
+    "nota": "Cada regime cita o artigo que o fixa. Um regime sem `artigo` verificado na pasta assets/law/ e um defeito, nao uma omissao - sweep.py falha se algum `artigo` nao aparecer nas capturas."
+  },
+
+  "mecanismos": {
+    "prescricao_extintiva": {
+      "descricao": "Decorrido o prazo, o beneficiario pode RECUSAR o cumprimento. O direito nao se extingue por si; cria-se uma faculdade de recusa.",
+      "artigo": "304.º",
+      "invocacao_necessaria": true,
+      "artigo_invocacao": "303.º",
+      "suspende": true,
+      "interrompe": true
+    },
+    "prescricao_presuntiva": {
+      "descricao": "Presume-se que a divida FOI PAGA. Nao e uma extincao: e uma presuncao de cumprimento, ilidivel por confissao do devedor.",
+      "artigo": "312.º",
+      "invocacao_necessaria": true,
+      "artigo_invocacao": "303.º",
+      "suspende": true,
+      "interrompe": true,
+      "ilidivel_por_confissao": true,
+      "artigo_confissao": "313.º",
+      "artigo_confissao_tacita": "314.º",
+      "regras_gerais_aplicaveis": "315.º"
+    },
+    "caducidade": {
+      "descricao": "Extingue-se o proprio direito pelo decurso do prazo. Nao se suspende nem se interrompe salvo determinacao legal.",
+      "artigo": "328.º",
+      "artigo_inicio": "329.º",
+      "artigo_apreciacao": "333.º",
+      "suspende": false,
+      "interrompe": false
+    }
+  },
+
+  "categorias": {
+    "servico_publico_essencial": {
+      "rotulo": "Servico publico essencial - preco do servico prestado",
+      "mecanismo": "prescricao_extintiva",
+      "meses": 6,
+      "artigo": "10.º",
+      "diploma": "Lei n.º 23/96",
+      "inicio": "prestacao_do_servico",
+      "excluidos": ["energia electrica em alta tensao (art. 10.º n.º 5)"],
+      "servicos_abrangidos_artigo": "1.º",
+      "exige_confirmacao": "O utilizador tem de confirmar que o servico consta da lista fechada do art. 1.º n.º 2 e que nao e alta tensao."
+    },
+    "servico_publico_essencial_diferenca": {
+      "rotulo": "Servico publico essencial - diferenca apos pagamento inferior ao consumo",
+      "mecanismo": "caducidade",
+      "meses": 6,
+      "artigo": "10.º",
+      "diploma": "Lei n.º 23/96",
+      "inicio": "pagamento_inferior",
+      "nota_critica": "Este e o n.º 2 do art. 10.º e e CADUCIDADE, nao prescricao. Um reconhecimento de divida NAO o interrompe (art. 328.º). Colapsar os dois numeros do art. 10.º num unico prazo de seis meses e o erro classico."
+    },
+    "alojamento_restauracao": {
+      "rotulo": "Alojamento, comidas ou bebidas",
+      "mecanismo": "prescricao_presuntiva",
+      "meses": 6,
+      "artigo": "316.º",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade",
+      "ressalva": "sem prejuizo da alinea a) do art. 317.º"
+    },
+    "estudante_ensino_saude": {
+      "rotulo": "Alojamento/alimentacao a estudantes; ensino, educacao, assistencia ou tratamento",
+      "mecanismo": "prescricao_presuntiva",
+      "anos": 2,
+      "artigo": "317.º",
+      "alinea": "a",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade"
+    },
+    "comerciante_a_nao_comerciante": {
+      "rotulo": "Creditos de comerciantes por objectos vendidos a nao comerciante",
+      "mecanismo": "prescricao_presuntiva",
+      "anos": 2,
+      "artigo": "317.º",
+      "alinea": "b",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade",
+      "condicao_verbatim": "a quem nao seja comerciante ou os nao destine ao seu comercio",
+      "nota_condicao": "A condicao e DISJUNTIVA (ou), nao conjuntiva. Basta uma das duas. Excepcao final: nao se aplica se a prestacao se destinar ao exercicio industrial do devedor."
+    },
+    "profissao_liberal": {
+      "rotulo": "Servicos prestados no exercicio de profissoes liberais",
+      "mecanismo": "prescricao_presuntiva",
+      "anos": 2,
+      "artigo": "317.º",
+      "alinea": "c",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade"
+    },
+    "rendas_alugueres": {
+      "rotulo": "Rendas e alugueres devidos pelo locatario",
+      "mecanismo": "prescricao_extintiva",
+      "anos": 5,
+      "artigo": "310.º",
+      "alinea": "b",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade"
+    },
+    "juros": {
+      "rotulo": "Juros convencionais ou legais e dividendos",
+      "mecanismo": "prescricao_extintiva",
+      "anos": 5,
+      "artigo": "310.º",
+      "alinea": "d",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade"
+    },
+    "prestacoes_de_credito_com_juros": {
+      "rotulo": "Quotas de amortizacao do capital pagaveis com os juros (prestacoes de credito)",
+      "mecanismo": "prescricao_extintiva",
+      "anos": 5,
+      "artigo": "310.º",
+      "alinea": "e",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade",
+      "nota_critica": "A prestacao mensal tipica de credito ao consumo, credito pessoal ou cartao com plano de pagamento - a divida mais comum nas cartas de cobranca. Sem esta categoria o utilizador caia em `ordinario` (20 anos) e era-lhe dito que uma divida barrada ha anos ainda corria. O capital mutuado isolado NAO cabe aqui; a alinea e) exige quotas de amortizacao pagaveis COM os juros.",
+      "cuidado": "Vencimento antecipado de todas as prestacoes por incumprimento altera o momento da exigibilidade e pode alterar o regime aplicavel. Confirme com advogado."
+    },
+
+    "alimentos_vencidos": {
+      "rotulo": "Pensoes alimenticias vencidas",
+      "mecanismo": "prescricao_extintiva",
+      "anos": 5,
+      "artigo": "310.º",
+      "alinea": "f",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade"
+    },
+    "prestacoes_periodicas": {
+      "rotulo": "Quaisquer outras prestacoes periodicamente renovaveis",
+      "mecanismo": "prescricao_extintiva",
+      "anos": 5,
+      "artigo": "310.º",
+      "alinea": "g",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade",
+      "nota": "Para renda perpetua/vitalicia e periodicas analogas, o direito UNITARIO corre desde a exigibilidade da PRIMEIRA prestacao nao paga (art. 307.º)."
+    },
+    "ordinario": {
+      "rotulo": "Prazo ordinario (tudo o que nao tenha prazo especial)",
+      "mecanismo": "prescricao_extintiva",
+      "anos": 20,
+      "artigo": "309.º",
+      "diploma": "Codigo Civil",
+      "inicio": "exigibilidade"
+    }
+  },
+
+  "eventos": {
+    "reconhecimento": {
+      "efeito": "interrompe",
+      "artigo": "325.º",
+      "nota": "O reconhecimento tacito so releva quando resulte de factos que inequivocamente o exprimam (n.º 2). NAO se aplica a caducidade (art. 328.º)."
+    },
+    "citacao_ou_notificacao": {
+      "efeito": "interrompe",
+      "artigo": "323.º",
+      "nota": "A anulacao da citacao NAO retira o efeito interruptivo (n.º 3). Prazo nao recomeca ate transito em julgado (art. 327.º n.º 1)."
+    },
+    "compromisso_arbitral": {
+      "efeito": "interrompe",
+      "artigo": "324.º"
+    },
+    "titulo_executivo_superveniente": {
+      "efeito": "requalifica_para_ordinario",
+      "artigo": "311.º",
+      "nota": "So se a sentenca/titulo SOBREVIER ao inicio do prazo curto. Prestacoes ainda nao devidas mantem o prazo curto (n.º 2)."
+    }
+  },
+
+  "direccao_do_erro": {
+    "politica": "conservadora_para_o_devedor",
+    "significado": "Perante duvida, o motor comunica que o prazo AINDA CORRE, nunca que ja decorreu.",
+    "porque": "O dano assimetrico esta do lado errado: dizer 'ja prescreveu' a quem tem uma divida viva leva a ignorar uma citacao e a uma condenacao a revelia. Dizer 'ainda corre' a quem ja podia recusar custa, no maximo, um pagamento que o art. 304.º n.º 2 torna irrepetivel - por isso o motor tambem AVISA antes de qualquer pagamento."
+  }
+}

@@ -1,0 +1,345 @@
+{
+  "_meta": {
+    "versao": "1.0.0",
+    "data": "2026-07-27",
+    "derivacao": "Cada caso foi construido a partir do texto legal capturado em assets/law/, NAO a partir da saida do motor. O valor esperado e escrito primeiro; o motor tem de o alcancar.",
+    "oraculo_de_flags": "`avisos_esperados` e `recusas_esperadas` sao conjuntos EXACTOS. Um aviso a mais reprova tanto quanto um aviso a menos - senao o motor podia calar um aviso critico e continuar verde.",
+    "limite_conhecido": "Nenhum caso e retirado de uma sentenca real. O corpus prova coerencia com o texto legal, nao com a pratica dos tribunais. Ver BLIND_SPOTS em scripts/oracle.py."
+  },
+  "cases": [
+
+    {
+      "id": "spe-01-fatura-agua-6-meses-decorrido",
+      "porque_existe": "O caso mais comum do pais: uma factura de agua/luz reclamada anos depois. Lei 23/96 art. 10.o n.o 1.",
+      "caso": {"categoria": "servico_publico_essencial", "data_inicio": "2025-01-15"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2025-07-15",
+                   "mecanismo": "prescricao_extintiva"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["303", "304"],
+      "derivacao_manual": "15/01/2025 + 6 meses = 15/07/2025 (art. 10.o n.o 1). Em 27/07/2026 ja decorreu. Saida tem de citar o art. 303.o (nao e de oficio) e o art. 304.o n.o 2 (pagamento irrepetivel)."
+    },
+
+    {
+      "id": "spe-02-a-correr",
+      "porque_existe": "Fronteira: um dia antes do termo o prazo AINDA CORRE.",
+      "caso": {"categoria": "servico_publico_essencial", "data_inicio": "2026-03-10"},
+      "hoje": "2026-09-09",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2026-09-10"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["325", "326"],
+      "derivacao_manual": "10/03/2026 + 6 meses = 10/09/2026. Em 09/09/2026 falta 1 dia. A saida tem de avisar que reconhecer a divida REINICIA (art. 325.o + 326.o n.o 1), nao suspende."
+    },
+
+    {
+      "id": "spe-03-no-dia-do-termo-ainda-corre",
+      "porque_existe": "CORRIGIDO 2026-07-27. A versao anterior deste caso afirmava PRAZO_DECORRIDO no proprio dia do termo e o gate passou a impor o erro. O art. 279.o al. c), aplicavel por forca do art. 296.o, diz que o prazo `termina as 24 HORAS do dia que corresponda`: no dia do termo o prazo ainda NAO decorreu e o credor pode citar validamente. O motor contradizia-se, alias, porque ja aceitava como interruptivo um acto praticado nesse mesmo dia.",
+      "caso": {"categoria": "servico_publico_essencial", "data_inicio": "2026-03-10"},
+      "hoje": "2026-09-10",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2026-09-10"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["325", "326"],
+      "derivacao_manual": "10/03/2026 + 6 meses = 10/09/2026, as 24h. Em 10/09/2026 ainda corre."
+    },
+
+    {
+      "id": "spe-04-dia-seguinte-ao-termo-decorreu",
+      "porque_existe": "O outro lado da mesma fronteira: no dia seguinte ja decorreu. Os dois casos juntos fixam a fronteira nos dois sentidos - um so deles deixava passar um off-by-one.",
+      "caso": {"categoria": "servico_publico_essencial", "data_inicio": "2026-03-10"},
+      "hoje": "2026-09-11",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2026-09-10"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["303", "304"],
+      "derivacao_manual": "Um dia depois do termo."
+    },
+
+    {
+      "id": "cad-01-caducidade-ignora-reconhecimento",
+      "porque_existe": "O CASO QUE JUSTIFICA O REPOSITORIO. Lei 23/96 art. 10.o n.o 2 e CADUCIDADE. Um reconhecimento de divida que reiniciaria uma prescricao nao toca na caducidade (art. 328.o). Colapsar os dois numeros do art. 10.o num unico 'seis meses' e o erro classico.",
+      "caso": {"categoria": "servico_publico_essencial_diferenca", "data_inicio": "2025-11-01",
+               "eventos": [{"tipo": "reconhecimento", "data": "2026-02-01"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2026-05-01",
+                   "mecanismo": "caducidade"},
+      "avisos_esperados": ["331"],
+      "recusas_esperadas": [],
+      "deve_conter": ["328", "331", "333"],
+      "derivacao_manual": "01/11/2025 + 6 meses = 01/05/2026. O reconhecimento de 01/02/2026 NAO interrompe (art. 328.o); se o motor o tratasse como interrupcao daria 01/08/2026 e diria erradamente que ainda corre. CORRIGIDO 2026-07-27: a versao anterior afirmava categoricamente que o reconhecimento nao produz efeito nenhum, citando so o art. 328.o. O art. 331.o n.o 2 admite que o reconhecimento IMPECA a caducidade quando o prazo respeita a direito disponivel; se o prazo do art. 10.o n.o 2 da Lei 23/96 cabe nessa hipotese e questao em aberto. O aviso passou a dize-lo em vez de fechar a questao."
+    },
+
+    {
+      "id": "cc317b-01-comerciante-reconhecimento-reinicia",
+      "porque_existe": "Mesmo facto, mecanismo diferente: aqui e prescricao e o reconhecimento REINICIA do zero (art. 326.o n.o 1), nao suspende.",
+      "caso": {"categoria": "comerciante_a_nao_comerciante", "data_inicio": "2023-06-01",
+               "eventos": [{"tipo": "reconhecimento", "data": "2024-09-15"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2026-09-15"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["325", "326"],
+      "derivacao_manual": "Prazo de 2 anos (art. 317.o b). Sem o reconhecimento, o termo teria sido 01/06/2025 e a divida estaria prescrita ha mais de um ano. O reconhecimento de 15/09/2024 inutiliza todo o tempo anterior (art. 326.o n.o 1) e abre novo prazo de 2 anos -> 15/09/2026. Em 27/07/2026 ainda faltam 50 dias. E o contraste exacto com cad-01: o MESMO facto, num prazo de caducidade, nao teria produzido efeito nenhum."
+    },
+
+    {
+      "id": "cc317b-02-presuntiva-avisa-da-confissao",
+      "porque_existe": "A prescricao presuntiva presume PAGAMENTO (art. 312.o). Quem alegar em juizo que nunca pagou confessa a divida (art. 314.o) e destroi a propria defesa. Um motor que nao diga isto e perigoso.",
+      "caso": {"categoria": "profissao_liberal", "data_inicio": "2023-01-10"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2025-01-10",
+                   "mecanismo": "prescricao_presuntiva"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["312", "313", "314"],
+      "derivacao_manual": "10/01/2023 + 2 anos = 10/01/2025 (art. 317.o c). Decorrido. A saida TEM de conter a armadilha do art. 314.o."
+    },
+
+    {
+      "id": "art311-01-titulo-superveniente-requalifica",
+      "porque_existe": "Art. 311.o n.o 1: um titulo executivo que SOBREVEM eleva o prazo curto ao ordinario de 20 anos.",
+      "caso": {"categoria": "comerciante_a_nao_comerciante", "data_inicio": "2020-01-10",
+               "eventos": [{"tipo": "titulo_executivo_superveniente", "data": "2021-06-01"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2041-06-01"},
+      "avisos_esperados": ["311"],
+      "recusas_esperadas": [],
+      "deve_conter": ["311"],
+      "derivacao_manual": "01/06/2021 + 20 anos = 01/06/2041 (art. 309.o via art. 311.o n.o 1)."
+    },
+
+    {
+      "id": "art311-02-titulo-anterior-nao-requalifica",
+      "porque_existe": "A palavra 'sobrevier' do art. 311.o n.o 1 e uma condicao, nao decoracao. Um titulo ANTERIOR ao inicio do prazo nao sobrevem a nada. Um motor que aplicasse os 20 anos aqui daria ao credor duas decadas que a lei nao lhe da.",
+      "caso": {"categoria": "comerciante_a_nao_comerciante", "data_inicio": "2022-01-10",
+               "eventos": [{"tipo": "titulo_executivo_superveniente", "data": "2021-06-01"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2024-01-10"},
+      "avisos_esperados": ["311"],
+      "recusas_esperadas": [],
+      "deve_conter": ["311"],
+      "derivacao_manual": "Titulo de 01/06/2021 e anterior a 10/01/2022: nao requalifica. Mantem-se o prazo de 2 anos -> 10/01/2024."
+    },
+
+    {
+      "id": "art302-01-reconhecimento-apos-termo-avisa-renuncia",
+      "porque_existe": "Art. 302.o: a renuncia so e admitida DEPOIS de decorrido o prazo, e PODE SER TACITA. Um reconhecimento posterior ao termo nao interrompe nada - mas pode ter deitado fora a defesa. Um motor que apenas dissesse 'nao interrompe' esconderia o unico facto que interessa.",
+      "caso": {"categoria": "servico_publico_essencial", "data_inicio": "2024-01-10",
+               "eventos": [{"tipo": "reconhecimento", "data": "2025-03-01"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2024-07-10"},
+      "avisos_esperados": ["302"],
+      "recusas_esperadas": [],
+      "deve_conter": ["302", "304"],
+      "derivacao_manual": "10/01/2024 + 6 meses = 10/07/2024. Reconhecimento em 01/03/2025 e posterior: nao interrompe, mas art. 302.o admite renuncia tacita."
+    },
+
+    {
+      "id": "art327-01-citacao-avisa-transito-em-julgado",
+      "porque_existe": "Art. 327.o n.o 1: interrompido por citacao, o novo prazo NAO COMECA enquanto nao transitar em julgado a decisao. A data de termo que o motor imprime assume processo terminado - se nao terminou, e prematura, e o motor tem de o dizer.",
+      "caso": {"categoria": "rendas_alugueres", "data_inicio": "2020-05-01",
+               "eventos": [{"tipo": "citacao_ou_notificacao", "data": "2023-02-10"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2028-02-10"},
+      "avisos_esperados": ["327"],
+      "recusas_esperadas": [],
+      "deve_conter": ["327"],
+      "derivacao_manual": "Rendas: 5 anos (art. 310.o b). Citacao em 10/02/2023 interrompe -> 10/02/2028, com a ressalva do art. 327.o n.o 1."
+    },
+
+    {
+      "id": "recusa-01-alta-tensao",
+      "porque_existe": "Lei 23/96 art. 10.o n.o 5 exclui a alta tensao. O motor tem de recusar, nao de aplicar seis meses.",
+      "caso": {"categoria": "servico_publico_essencial", "data_inicio": "2025-01-15",
+               "factos": {"alta_tensao": true}},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "RECUSA"},
+      "avisos_esperados": [],
+      "recusas_esperadas": ["alta_tensao"],
+      "deve_conter": [],
+      "derivacao_manual": "Recusa por art. 10.o n.o 5."
+    },
+
+    {
+      "id": "recusa-02-heranca",
+      "porque_existe": "Art. 322.o: nao se completa antes de seis meses depois de haver pessoa contra quem os direitos possam ser invocados - data que depende da habilitacao de herdeiros.",
+      "caso": {"categoria": "ordinario", "data_inicio": "2000-01-01",
+               "factos": {"devedor_falecido_ou_heranca": true}},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "RECUSA"},
+      "avisos_esperados": [],
+      "recusas_esperadas": ["devedor_falecido_ou_heranca"],
+      "deve_conter": [],
+      "derivacao_manual": "Mesmo com 26 anos decorridos o motor recusa: a data de conclusao nao e calculavel sem factos que nao tem."
+    },
+
+    {
+      "id": "recusa-03-incapaz-nao-e-suspensao",
+      "porque_existe": "Art. 320.o NAO e uma pausa: e proibicao de COMPLETAR antes de decorrido um ano sobre o termo da incapacidade, e tres anos nos maiores acompanhados (n.o 3). Modelar como suspensao daria um resultado errado, por isso recusa-se.",
+      "caso": {"categoria": "ordinario", "data_inicio": "2000-01-01",
+               "factos": {"incapaz_menor_ou_maior_acompanhado": true}},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "RECUSA"},
+      "avisos_esperados": [],
+      "recusas_esperadas": ["incapaz_menor_ou_maior_acompanhado"],
+      "deve_conter": [],
+      "derivacao_manual": "Recusa por art. 320.o."
+    },
+
+    {
+      "id": "recusa-04-multiplas",
+      "porque_existe": "Varios factos de recusa em simultaneo tem de aparecer TODOS. Um motor que reportasse so o primeiro esconderia obstaculos.",
+      "caso": {"categoria": "ordinario", "data_inicio": "2000-01-01",
+               "factos": {"fiador_ou_garantia_prestada": true, "divida_solidaria": true,
+                          "divida_assumida_por_terceiro": true}},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "RECUSA"},
+      "avisos_esperados": [],
+      "recusas_esperadas": ["divida_assumida_por_terceiro", "divida_solidaria",
+                            "fiador_ou_garantia_prestada"],
+      "deve_conter": [],
+      "derivacao_manual": "Tres portas, tres recusas."
+    },
+
+    {
+      "id": "cc310-01-juros-cinco-anos-bissexto",
+      "porque_existe": "Data de inicio em 29/02 de ano bissexto: 5 anos depois esse dia nao existe. A convencao encurta para 28/02.",
+      "caso": {"categoria": "juros", "data_inicio": "2024-02-29"},
+      "hoje": "2029-03-01",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2029-02-28"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["303"],
+      "derivacao_manual": "29/02/2024 + 5 anos: 2029 nao e bissexto -> 28/02/2029."
+    },
+
+    {
+      "id": "cc309-01-ordinario-vinte-anos",
+      "porque_existe": "O prazo residual (art. 309.o). Qualquer divida sem prazo especial cai aqui.",
+      "caso": {"categoria": "ordinario", "data_inicio": "2010-08-31"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2030-08-31"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["325"],
+      "derivacao_manual": "31/08/2010 + 20 anos = 31/08/2030."
+    },
+
+    {
+      "id": "cc316-01-restauracao-seis-meses",
+      "porque_existe": "Art. 316.o: alojamento, comidas ou bebidas prescrevem em seis meses e sao PRESUNTIVAS.",
+      "caso": {"categoria": "alojamento_restauracao", "data_inicio": "2026-01-31"},
+      "hoje": "2026-08-01",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2026-07-31",
+                   "mecanismo": "prescricao_presuntiva"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["312", "314"],
+      "derivacao_manual": "31/01/2026 + 6 meses = 31/07/2026 (Julho tem 31 dias, nao ha encurtamento)."
+    },
+
+    {
+      "id": "cc316-02-fim-de-mes-encurta",
+      "porque_existe": "31/08 + 6 meses cai em Fevereiro, que nao tem 31. Encurta para o ultimo dia.",
+      "caso": {"categoria": "alojamento_restauracao", "data_inicio": "2025-08-31"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2026-02-28"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["312"],
+      "derivacao_manual": "31/08/2025 + 6 meses -> 28/02/2026 (2026 nao e bissexto)."
+    },
+
+    {
+      "id": "reg-01-accao-tempestiva-sobre-caducidade-recusa",
+      "porque_existe": "DEFEITO CRITICO ENCONTRADO 2026-07-27. O motor tratava qualquer acto sobre um prazo de caducidade como `sem efeito` invocando o art. 328.o, e devolvia PRAZO_DECORRIDO. Mas o art. 328.o proibe suspensao e interrupcao - NAO o impedimento. O art. 331.o n.o 1 diz que a pratica tempestiva do acto com efeito impeditivo IMPEDE a caducidade, e o art. 332.o n.o 1 manda aplicar o art. 327.o n.o 3 a accao proposta a tempo. Um consumidor que propos accao em Janeiro era informado em Julho de que o direito do prestador tinha caducado em Maio. Passou a ser recusa.",
+      "caso": {"categoria": "servico_publico_essencial_diferenca", "data_inicio": "2025-11-01",
+               "eventos": [{"tipo": "citacao_ou_notificacao", "data": "2026-01-15"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "RECUSA"},
+      "avisos_esperados": [],
+      "recusas_esperadas": ["accao_judicial_sobre_prazo_de_caducidade"],
+      "deve_conter": ["331"],
+      "derivacao_manual": "Accao dentro dos 6 meses. Efeito impeditivo e questao juridica -> recusa fundamentada no art. 331.o n.o 1."
+    },
+
+    {
+      "id": "reg-02-requalificacao-sobrevive-a-interrupcao",
+      "porque_existe": "DEFEITO CRITICO ENCONTRADO 2026-07-27. Depois de um titulo executivo requalificar para 20 anos (art. 311.o), uma interrupcao posterior reiniciava o prazo CURTO da categoria, porque o motor recalculava a partir de `cat`. O art. 326.o n.o 2 diz que a nova prescricao segue o prazo primitivo `SALVO O DISPOSTO NO ARTIGO 311.o`. A saida chegava a imprimir `20 anos (ordinario, requalificado)` e um termo de 2 anos na mesma pagina - contradizia-se a si propria.",
+      "caso": {"categoria": "comerciante_a_nao_comerciante", "data_inicio": "2020-01-10",
+               "eventos": [{"tipo": "titulo_executivo_superveniente", "data": "2021-06-01"},
+                           {"tipo": "reconhecimento", "data": "2022-01-01"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2042-01-01"},
+      "avisos_esperados": ["311"],
+      "recusas_esperadas": [],
+      "deve_conter": ["311", "326"],
+      "derivacao_manual": "Titulo 01/06/2021 -> prazo em vigor passa a 20 anos. Reconhecimento 01/01/2022 interrompe e reinicia o prazo EM VIGOR: 01/01/2022 + 20 anos = 01/01/2042. Antes da correccao dava 01/01/2024 e PRAZO_DECORRIDO."
+    },
+
+    {
+      "id": "reg-03-titulo-apos-o-termo-recusa",
+      "porque_existe": "DEFEITO ENCONTRADO 2026-07-27. Um titulo executivo posterior ao termo recebia o aviso de renuncia tacita do art. 302.o - redigido para o RECONHECIMENTO - e o estado ficava PRAZO_DECORRIDO. Alguem com sentenca transitada contra si era informado de que `pode invocar` e podia ignorar a execucao. Se a prescricao nao foi invocada no processo, o caso julgado consolidou-se.",
+      "caso": {"categoria": "comerciante_a_nao_comerciante", "data_inicio": "2020-01-10",
+               "eventos": [{"tipo": "titulo_executivo_superveniente", "data": "2023-06-01"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "RECUSA"},
+      "avisos_esperados": [],
+      "recusas_esperadas": ["titulo_executivo_ou_sentenca_apos_o_prazo"],
+      "deve_conter": ["303"],
+      "derivacao_manual": "Termo 10/01/2022; titulo 01/06/2023 e posterior -> recusa."
+    },
+
+    {
+      "id": "reg-04-arbitragem-avisa-do-327",
+      "porque_existe": "DEFEITO ENCONTRADO 2026-07-27. O art. 327.o n.o 1 nomeia expressamente `citacao, notificacao ou acto equiparado, OU compromisso arbitral`, mas o motor so avisava no primeiro caso. Um compromisso arbitral saia com zero avisos.",
+      "caso": {"categoria": "rendas_alugueres", "data_inicio": "2020-05-01",
+               "eventos": [{"tipo": "compromisso_arbitral", "data": "2023-02-10"}]},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2028-02-10"},
+      "avisos_esperados": ["327"],
+      "recusas_esperadas": [],
+      "deve_conter": ["327", "324"],
+      "derivacao_manual": "Compromisso arbitral interrompe (art. 324.o n.o 1); 10/02/2023 + 5 anos = 10/02/2028, com a ressalva do art. 327.o n.o 1."
+    },
+
+    {
+      "id": "reg-05-credito-ao-consumo-cinco-anos",
+      "porque_existe": "LACUNA ENCONTRADA 2026-07-27. Nao havia categoria para o art. 310.o al. e) (quotas de amortizacao pagaveis com os juros) - a prestacao de credito ao consumo, a divida mais comum nas cartas de cobranca. O utilizador caia em `ordinario` e era-lhe dito que uma divida barrada ha anos ainda corria durante 20. Como nao existe categoria `desconhecida`, a lacuna produzia silenciosamente a resposta errada.",
+      "caso": {"categoria": "prestacoes_de_credito_com_juros", "data_inicio": "2019-09-30"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2024-09-30"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["310", "304"],
+      "derivacao_manual": "30/09/2019 + 5 anos = 30/09/2024 (art. 310.o al. e). Em `ordinario` teria dado 2039 e PRAZO_A_CORRER."
+    },
+
+    {
+      "id": "reg-06-a-correr-avisa-para-confirmar-a-categoria",
+      "porque_existe": "`ainda corre` e a resposta que o utilizador aceita sem discutir, e por isso e onde uma categoria mal escolhida passa despercebida - depois paga, e o art. 304.o n.o 2 torna o pagamento irrepetivel. A saida A_CORRER passou a carregar o aviso de confirmacao de categoria.",
+      "caso": {"categoria": "ordinario", "data_inicio": "2020-01-01"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_A_CORRER", "data_termo": "2040-01-01"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["310", "317", "304"],
+      "derivacao_manual": "Prazo ordinario de 20 anos. O aviso tem de nomear as categorias curtas frequentes para que o utilizador reveja a escolha."
+    },
+
+    {
+      "id": "cc307-01-prestacoes-periodicas",
+      "porque_existe": "Art. 307.o: nas prestacoes periodicas o direito UNITARIO corre desde a exigibilidade da PRIMEIRA prestacao nao paga - nao desde a ultima.",
+      "caso": {"categoria": "prestacoes_periodicas", "data_inicio": "2019-04-30"},
+      "hoje": "2026-07-27",
+      "esperado": {"estado": "PRAZO_DECORRIDO", "data_termo": "2024-04-30"},
+      "avisos_esperados": [],
+      "recusas_esperadas": [],
+      "deve_conter": ["303"],
+      "derivacao_manual": "30/04/2019 + 5 anos = 30/04/2024 (art. 310.o g)."
+    }
+
+  ]
+}

@@ -1,0 +1,20 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ⚖️ Preciso de um advogado a sério
+    url: https://portal.oa.pt/
+    about: "Esta ferramenta não o pode representar nem invocar a prescrição por si. A Ordem dos Advogados tem pesquisa de advogados e informação sobre apoio judiciário."
+  - name: 🆘 Não tenho meios para pagar advogado
+    url: https://www.seg-social.pt/protecao-juridica
+    about: "Apoio judiciário (proteção jurídica) — pedido através da Segurança Social. Pode cobrir honorários e custas."
+  - name: 🛡️ Um cobrador está a pressionar-me
+    url: https://www.deco.proteste.pt/
+    about: "A DECO PROteste apoia consumidores em cobranças abusivas. Este repositório não substitui esse apoio."
+  - name: 🏛️ Litígios de consumo — arbitragem gratuita
+    url: https://www.consumidor.gov.pt/parceiros/sistema-de-defesa-do-consumidor/centros-de-arbitragem-de-conflitos-de-consumo.aspx
+    about: "Centros de arbitragem de conflitos de consumo. Muitos serviços essenciais têm arbitragem necessária."
+  - name: 🧮 Projetos irmãos
+    url: https://github.com/yeer0s/AoCentimo
+    about: "Ao Cêntimo (IRS) e recibosegarantia (recibos e garantias) — offline, MIT, mesma família."
+  - name: 🇵🇹 Ferramentas e guias gratuitos
+    url: https://mowei.pt
+    about: "Mowei — energia, telecom, seguros, banca, crédito, apoios."
