@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="porreceber">
+  <rect width="1000" height="300" rx="14" fill="#ffffff"/>
+  <rect x="0.5" y="0.5" width="999" height="299" rx="14" fill="none" stroke="#d1d9e0"/>
+
+  <!-- an envelope, sealed, with a clock face where the stamp goes -->
+  <g transform="translate(64,86)">
+    <rect x="0" y="0" width="132" height="94" rx="8" fill="none" stroke="#59636e" stroke-width="3"/>
+    <path d="M0 8 L66 58 L132 8" fill="none" stroke="#59636e" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="112" cy="20" r="26" fill="#ffffff"/>
+    <circle cx="112" cy="20" r="26" fill="none" stroke="#bc4c00" stroke-width="3"/>
+    <path d="M112 6 L112 20 L122 26" fill="none" stroke="#bc4c00" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="236" y="112" font-family="ui-sans-serif,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="54" font-weight="700" fill="#1f2328">porreceber</text>
+  <text x="236" y="150" font-family="ui-sans-serif,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="21" fill="#59636e">Prescrição e caducidade de dívidas · Portugal</text>
+
+  <g font-family="ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" font-size="14">
+    <g transform="translate(236,176)">
+      <rect width="196" height="30" rx="15" fill="#f6f8fa" stroke="#d1d9e0"/>
+      <text x="16" y="20" fill="#1a7f37">34 artigos verbatim</text>
+    </g>
+    <g transform="translate(444,176)">
+      <rect width="168" height="30" rx="15" fill="#f6f8fa" stroke="#d1d9e0"/>
+      <text x="16" y="20" fill="#1a7f37">26 verificações</text>
+    </g>
+    <g transform="translate(624,176)">
+      <rect width="150" height="30" rx="15" fill="#f6f8fa" stroke="#d1d9e0"/>
+      <text x="16" y="20" fill="#1a7f37">0 dependências</text>
+    </g>
+    <g transform="translate(786,176)">
+      <rect width="126" height="30" rx="15" fill="#f6f8fa" stroke="#d1d9e0"/>
+      <text x="16" y="20" fill="#1a7f37">sem rede</text>
+    </g>
+  </g>
+
+  <text x="236" y="242" font-family="ui-sans-serif,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="16" fill="#59636e">O prazo não extingue a dívida — cria a faculdade de recusar, e ela tem de ser invocada.</text>
+  <text x="236" y="266" font-family="ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" font-size="13" fill="#bc4c00">art. 303.º · art. 304.º n.º 2 · art. 312.º · art. 328.º</text>
+</svg>

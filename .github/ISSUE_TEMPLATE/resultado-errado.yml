@@ -1,0 +1,78 @@
+name: Resultado errado ou prazo mal calculado
+description: O motor devolveu um prazo, mecanismo ou aviso que não bate certo com a lei
+labels: ["correção", "carece de fonte"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado. Antes de mais: **não cole dados pessoais reais.** Nomes, NIF,
+        moradas e números de contrato não são precisos para reproduzir um erro de
+        cálculo — as datas e a categoria chegam.
+
+  - type: textarea
+    id: comando
+    attributes:
+      label: O que correu
+      description: O comando exacto, ou o JSON do caso (anonimizado).
+      render: shell
+      placeholder: python scripts/prescricao.py --categoria servico_publico_essencial --data-inicio 2025-01-15
+    validations:
+      required: true
+
+  - type: textarea
+    id: obtido
+    attributes:
+      label: O que o motor devolveu
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que devia ter devolvido, e porquê
+    validations:
+      required: true
+
+  - type: textarea
+    id: fonte
+    attributes:
+      label: A fonte
+      description: |
+        **Esta é a parte que decide se o issue avança.** Um prazo só muda neste
+        repositório com o texto que o fundamenta. Indique o artigo e o diploma,
+        ou a referência do acórdão (tribunal, data, número do processo).
+
+        Jurisprudência é especialmente bem-vinda: o maior limite declarado deste
+        projecto é que nenhum caso de teste vem de uma sentença real.
+      placeholder: |
+        Ex.: Código Civil art. 310.º al. b)
+        Ex.: Ac. TRL de 12/03/2024, proc. 1234/22.5T8LSB.L1-7
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Que tipo de erro parece ser
+      options:
+        - Prazo errado (número de meses/anos)
+        - Mecanismo errado (prescrição vs caducidade vs presuntiva)
+        - Data de início errada
+        - Evento tratado mal (interrupção, suspensão, título executivo)
+        - Aviso em falta ou aviso a mais
+        - Devia recusar e não recusou
+        - Recusou e não devia
+        - Outro
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmacoes
+    attributes:
+      label: Confirmações
+      options:
+        - label: Não incluí dados pessoais reais.
+          required: true
+        - label: Percebo que isto não é aconselhamento jurídico e que o repositório não me pode representar.
+          required: true
